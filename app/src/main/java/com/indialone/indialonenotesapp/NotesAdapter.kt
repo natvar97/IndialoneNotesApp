@@ -16,6 +16,7 @@ class NotesAdapter(
     class NotesViewHolder(itemView: NotesItemBinding) : RecyclerView.ViewHolder(itemView.root) {
         val title = itemView.tvTitle
         val description = itemView.tvDescription
+        val ivDelete = itemView.ivDelete
     }
 
 
@@ -32,5 +33,8 @@ class NotesAdapter(
     override fun onBindViewHolder(holder: NotesViewHolder, position: Int, model: NoteEntity) {
         holder.title.text = model.title
         holder.description.text = model.description
+        holder.ivDelete.setOnClickListener {
+            NotesAdapter(options).getRef(position).removeValue()
+        }
     }
 }
