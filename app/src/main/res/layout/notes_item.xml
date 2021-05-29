@@ -13,6 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/icon_delete"
+            app:layout_constraintTop_toTopOf="@id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
