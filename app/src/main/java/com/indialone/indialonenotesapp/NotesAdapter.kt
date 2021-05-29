@@ -1,10 +1,15 @@
 package com.indialone.indialonenotesapp
 
+import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.indialone.indialonenotesapp.databinding.NotesItemBinding
 
 class NotesAdapter(
@@ -17,6 +22,7 @@ class NotesAdapter(
         val title = itemView.tvTitle
         val description = itemView.tvDescription
         val ivDelete = itemView.ivDelete
+        val ivEdit = itemView.ivEdit
     }
 
 
@@ -35,6 +41,11 @@ class NotesAdapter(
         holder.description.text = model.description
         holder.ivDelete.setOnClickListener {
             NotesAdapter(options).getRef(position).removeValue()
+        }
+        holder.ivEdit.setOnClickListener {
+            val intent = Intent(holder.itemView.context , NewNoteActivity::class.java)
+            intent.putExtra(Constants.NOTE , model)
+            holder.itemView.context.startActivity(intent)
         }
     }
 }

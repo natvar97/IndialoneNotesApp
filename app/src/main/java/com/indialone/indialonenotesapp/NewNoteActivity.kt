@@ -3,6 +3,7 @@ package com.indialone.indialonenotesapp
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ class NewNoteActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var firebaseDbInstance: FirebaseDatabase
     private lateinit var firebaseDb: DatabaseReference
     private var userId: String? = null
+    private var editNote: NoteEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,13 +25,26 @@ class NewNoteActivity : AppCompatActivity(), View.OnClickListener {
         mBinding = ActivityNewNoteBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
+        if (intent.hasExtra(Constants.NOTE)) {
+            editNote = intent.getParcelableExtra(Constants.NOTE)
+            Log.e("editNote", "${editNote!!.title} , ${editNote!!.description}")
+        }
+
+        editNote?.let {
+            if (it.id != null) {
+                mBinding.etTitle.setText(it.title)
+                mBinding.etDescription.setText(it.description)
+            }
+        }
+
+
         firebaseDbInstance = FirebaseDatabase.getInstance()
         firebaseDb = firebaseDbInstance.getReference(Constants.NOTES)
 
         firebaseDbInstance.getReference(Constants.APP_TITLE_NODE).setValue(Constants.APP_TITLE)
 
-
         mBinding.saveNote.setOnClickListener(this)
+
 
     }
 
@@ -43,6 +58,10 @@ class NewNoteActivity : AppCompatActivity(), View.OnClickListener {
                     if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description)) {
                         Toast.makeText(this, "All fields required...", Toast.LENGTH_SHORT).show()
                     } else {
+
+                        editNote?.let {
+                            userId = it.id
+                        }
 
                         if (TextUtils.isEmpty(userId)) {
                             createNote(title, description)
@@ -61,7 +80,8 @@ class NewNoteActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun createNote(title: String, description: String) {
         userId = firebaseDb.push().key
-        val note = NoteEntity(title, description)
+        Log.e("userId", "$userId")
+        val note = NoteEntity(userId , title, description)
         firebaseDb.child(userId!!).setValue(note)
     }
 
